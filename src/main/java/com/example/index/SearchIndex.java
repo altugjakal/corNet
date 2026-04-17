@@ -1,4 +1,4 @@
-package org.example.index;
+package com.example.index;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ public class SearchIndex {
         for(int i=0; i < offsets.size(); i++){
             try {
                 docs.addAll(this.postingsList.getByOffset(offsets.get(i)));
+
             } catch (IOException e) {
                 assert true;
             }

@@ -1,6 +1,6 @@
-package org.example;
+package com.example;
 
-import org.example.index.*;
+import com.example.index.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.example.index;
+package com.example.index;
 
 import java.io.*;
 import java.util.*;
@@ -30,10 +30,13 @@ public class PostingsList {
         try(RandomAccessFile raf = new RandomAccessFile(this.filePath, "r")) {
         List<PostingItem> results = new ArrayList<>();
         raf.seek(offset);
+
         int count = raf.readInt();
         for(int i = 0; i < count; i++) {
             int docId = raf.readInt();
             float score = raf.readFloat();
+
+
             PostingItem posting = new PostingItem();
             posting.docId = docId;
             posting.score = score;
@@ -52,10 +55,12 @@ public class PostingsList {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
                 int setOffset = offset;
                 dos.writeInt(entry.getValue().size());
+
                 offset += 4;
                 for (PostingItem p : entry.getValue()){
                     dos.writeInt(p.docId);
                     dos.writeFloat(p.score);
+
                     offset += 8;
                 }
                 dictionary.add(entry.getKey(), setOffset);

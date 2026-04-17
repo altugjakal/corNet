@@ -1,4 +1,4 @@
-package org.example.index;
+package com.example.index;
 
 public class IndexWriter {
     private Dictionary dictionary;

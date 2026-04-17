@@ -1,4 +1,4 @@
-package org.example.index;
+package com.example.index;
 
 import java.io.Serializable;
 

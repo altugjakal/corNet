@@ -1,10 +1,13 @@
-package org.example.index;
+package com.example.index;
+
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Service
 public class Dictionary   {
     private List<DictItem> items;
     private String filePath;
@@ -16,11 +19,12 @@ public class Dictionary   {
 
     }
 
+
+
     public void load() {
 
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
             items = (List<DictItem>) ois.readObject();
-
 
 
 
@@ -63,11 +67,11 @@ public class Dictionary   {
     public List<Integer> getOffsets(List<String> tokens) {
         List<Integer> offsets = new ArrayList<Integer>();
         for(String token : tokens){
+
             offsets.add(this.items.stream().filter(var -> var.token.equals(token))
                     .findFirst()
                     .map(item -> item.offset)
                     .orElse(-1)); //neg here
-
         }
 
 
