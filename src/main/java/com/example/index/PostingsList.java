@@ -32,14 +32,16 @@ public class PostingsList {
         raf.seek(offset);
 
         int count = raf.readInt();
+        float df = count;
         for(int i = 0; i < count; i++) {
             int docId = raf.readInt();
             float score = raf.readFloat();
 
-
             PostingItem posting = new PostingItem();
             posting.docId = docId;
             posting.score = score;
+            posting.idf = (1 / df);
+
             results.add(posting);
         }
 
@@ -53,17 +55,21 @@ public class PostingsList {
 
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, true))) {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
-                int setOffset = offset;
-                dos.writeInt(entry.getValue().size());
 
-                offset += 4;
-                for (PostingItem p : entry.getValue()){
-                    dos.writeInt(p.docId);
-                    dos.writeFloat(p.score);
 
-                    offset += 8;
-                }
-                dictionary.add(entry.getKey(), setOffset);
+
+
+                    int setOffset = offset;
+                    dos.writeInt(entry.getValue().size());
+
+                    offset += 4;
+                    for (PostingItem p : entry.getValue()){
+                        dos.writeInt(p.docId);
+                        dos.writeFloat(p.score);
+
+                        offset += 8;
+                    }
+                    dictionary.add(entry.getKey(), setOffset);
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

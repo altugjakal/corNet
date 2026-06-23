@@ -20,7 +20,9 @@ public class SearchIndex {
         List<PostingItem> docs = new ArrayList<PostingItem>();
         for(int i=0; i < offsets.size(); i++){
             try {
+
                 docs.addAll(this.postingsList.getByOffset(offsets.get(i)));
+
 
             } catch (IOException e) {
                 assert true;

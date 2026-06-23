@@ -12,6 +12,7 @@ import java.util.List;
 public class IndexController {
     private Dictionary dictionary = new Dictionary("src/files/dictionary.bin");
     private PostingsList postingsList = new PostingsList(dictionary, "src/files/postings.bin");
+    private IndexWriter indexWriter = new IndexWriter(dictionary, postingsList);
 
     public IndexController() {
         dictionary.load();
@@ -27,17 +28,20 @@ public class IndexController {
     }
 
     @PostMapping("/insert")
-    public String index(@RequestBody InsertRequest insertRequest) {
+    public void index(@RequestBody InsertRequest insertRequest) {
         String[] tokens = insertRequest.text.split(" ");
 
-        IndexWriter indexWriter = new IndexWriter(dictionary, postingsList);
+
         for(int i = 0; i < tokens.length; i++ ) {
             indexWriter.write(insertRequest.docId, tokens[i], (float) insertRequest.score);
         }
 
+    }
+
+    @PostMapping("/commit")
+    public void index() {
         indexWriter.commit();
 
-        return "Success";
     }
 
     @GetMapping("/search/{query}")
@@ -49,9 +53,7 @@ public class IndexController {
         String[] tokens = query.split(" ");
         List<String> terms = new ArrayList<String>();
 
-
         SearchIndex searchIndex = new SearchIndex(dictionary, postingsList);
-
 
 
         for(int i = 0; i < tokens.length; i++) {
