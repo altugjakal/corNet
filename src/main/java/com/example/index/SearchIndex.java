@@ -16,8 +16,9 @@ public class SearchIndex {
 
     public List<PostingItem> searchByTokens(List<String> tokens) {
         List<Integer> offsets = this.dictionary.getOffsets(tokens);
+        //combine idf's somehow?? read more
 
-        List<PostingItem> docs = new ArrayList<PostingItem>();
+        List<PostingItem> docs = new ArrayList<>();
         for(int i=0; i < offsets.size(); i++){
             try {
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class IndexController {
@@ -20,8 +21,7 @@ public class IndexController {
 
     public static class InsertRequest {
         public Integer docId;
-        public String text;
-        public Float score;
+        public Map<String, List<HitItem>> pairs;
 
         public InsertRequest() {}
 
@@ -29,12 +29,11 @@ public class IndexController {
 
     @PostMapping("/insert")
     public void index(@RequestBody InsertRequest insertRequest) {
-        String[] tokens = insertRequest.text.split(" ");
 
+        Map<String, List<HitItem>> pairs = insertRequest.pairs;
 
-        for(int i = 0; i < tokens.length; i++ ) {
-            indexWriter.write(insertRequest.docId, tokens[i], (float) insertRequest.score);
-        }
+        indexWriter.write(insertRequest.docId, pairs);
+
 
     }
 
