@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SearchIndex {
     private Dictionary dictionary;
     private PostingsList postingsList;
@@ -14,22 +15,47 @@ public class SearchIndex {
 
     }
 
-    public List<PostingItem> searchByTokens(List<String> tokens) {
-        List<Integer> offsets = this.dictionary.getOffsets(tokens);
-        //combine idf's somehow?? read more
+    public List<ApiTokenItem> searchByTokens(List<String> tokens) {
+        //combine idf's somehow?? read more -read more use vector model on the other end
+        List<ApiTokenItem> docs = new ArrayList<>();
+        for (String token: tokens ) {
+            Integer offset = this.dictionary.getOffset(token);
 
-        List<PostingItem> docs = new ArrayList<>();
-        for(int i=0; i < offsets.size(); i++){
+
+
+            if (offset == null) {
+                continue;
+            }
+
+            ApiTokenItem tokenItem = new ApiTokenItem();
+            tokenItem.token = token;
+
             try {
 
-                docs.addAll(this.postingsList.getByOffset(offsets.get(i)));
+                List<OffsetItem> offsetItems = this.postingsList.getByOffset(offset);
+
+
+
+
+                for (OffsetItem offsetItem : offsetItems) {
+                    tokenItem.postingItem.add(offsetItem.postingItem);
+
+                }
+
+                docs.add(tokenItem);
 
 
             } catch (IOException e) {
                 assert true;
             }
-        }
 
+
+
+
+
+
+        }
         return docs;
     }
+    
 }

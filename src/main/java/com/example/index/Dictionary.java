@@ -64,18 +64,17 @@ public class Dictionary   {
         }
     }
 
-    public List<Integer> getOffsets(List<String> tokens) {
-        List<Integer> offsets = new ArrayList<Integer>();
-        for(String token : tokens){
+    public Integer getOffset(String token) {
 
-            offsets.add(this.items.stream().filter(var -> var.token.equals(token))
+
+
+        Integer offset; //neg here
+        offset = this.items.stream().filter(var -> var.token.equals(token))
                     .findFirst()
                     .map(item -> item.offset)
-                    .orElse(-1)); //neg here
-        }
+                    .orElse(-1);
 
 
-
-        return offsets;
+        return offset;
     }
 }

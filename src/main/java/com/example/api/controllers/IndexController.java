@@ -6,6 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -45,25 +46,19 @@ public class IndexController {
 
     @GetMapping("/search/{query}")
 
-    public List<PostingItem> index(@PathVariable String query) {
+    public List<ApiTokenItem> index(@PathVariable String query) {
 
 
 
         String[] tokens = query.split(" ");
-        List<String> terms = new ArrayList<String>();
 
         SearchIndex searchIndex = new SearchIndex(dictionary, postingsList);
 
 
-        for(int i = 0; i < tokens.length; i++) {
-            terms.add(tokens[i]);
-        }
+        List<String> terms = new ArrayList<String>(Arrays.asList(tokens));
 
 
-        List<PostingItem> results = searchIndex.searchByTokens(terms);
-
-
-        return results;
+        return searchIndex.searchByTokens(terms);
 
 
     }
