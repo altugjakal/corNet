@@ -49,7 +49,7 @@ public class IndexController {
     public List<ApiTokenItem> index(@PathVariable String query) {
 
 
-
+//its idf time baby
         String[] tokens = query.split(" ");
 
         SearchIndex searchIndex = new SearchIndex(dictionary, postingsList);

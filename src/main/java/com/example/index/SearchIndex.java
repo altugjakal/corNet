@@ -34,11 +34,17 @@ public class SearchIndex {
 
                 List<OffsetItem> offsetItems = this.postingsList.getByOffset(offset);
 
+                float df = offsetItems.size();
+
+
+
 
 
 
                 for (OffsetItem offsetItem : offsetItems) {
                     tokenItem.postingItem.add(offsetItem.postingItem);
+
+
 
                 }
 
