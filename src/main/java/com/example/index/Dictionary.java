@@ -5,16 +5,17 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class Dictionary   {
-    private List<DictItem> items;
+    private HashMap<String, Integer> items;
     private String filePath;
 
     public Dictionary(String filePath) {
         this.filePath = filePath;
-        this.items = new ArrayList<>();
+        this.items = new HashMap<>();
 
 
     }
@@ -24,18 +25,16 @@ public class Dictionary   {
     public void load() {
 
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
-            items = (List<DictItem>) ois.readObject();
+            items = (HashMap<String, Integer>) ois.readObject();
 
 
 
-        } catch (EOFException e){
+        } catch (EOFException | ClassNotFoundException e){
 
-            items = new ArrayList<>();
+            items = new HashMap<>();
         } catch (IOException e) {
 
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            items = new ArrayList<>();
         }
 
 
@@ -53,28 +52,13 @@ public class Dictionary   {
     }
 
     public void add(String token, Integer offset) {
-        boolean exists = items.stream()
-                .anyMatch(var -> var.token.equals(token));
-
-        if (!exists) {
-            DictItem new_token = new DictItem();
-            new_token.offset = offset;
-            new_token.token = token;
-            items.add(new_token);
+        if (!items.containsKey(token)) {
+            items.put(token, offset);
         }
     }
 
     public Integer getOffset(String token) {
 
-
-
-        Integer offset; //neg here
-        offset = this.items.stream().filter(var -> var.token.equals(token))
-                    .findFirst()
-                    .map(item -> item.offset)
-                    .orElse(-1);
-
-
-        return offset;
+        return items.getOrDefault(token, -1);
     }
 }

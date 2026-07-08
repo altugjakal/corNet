@@ -46,8 +46,10 @@ public class Main {
         for (int i = 0; i < results.size(); i++) {
 
             System.out.println(results.get(i).token);
-            for (int j = 0; j < results.get(i).postingItem.size(); j++) {
-                System.out.println(results.get(i).postingItem.get(j).docId);
+            for (int j = 0; j < results.get(i).postingItems.size(); j++) {
+                System.out.println(results.get(i).postingItems.get(j).docId);
+                System.out.println(results.get(i).postingItems.size());
+
             }
         }
 

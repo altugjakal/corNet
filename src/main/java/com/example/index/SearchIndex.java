@@ -22,7 +22,6 @@ public class SearchIndex {
             Integer offset = this.dictionary.getOffset(token);
 
 
-
             if (offset == null) {
                 continue;
             }
@@ -34,19 +33,18 @@ public class SearchIndex {
 
                 List<OffsetItem> offsetItems = this.postingsList.getByOffset(offset);
 
-                float df = offsetItems.size();
-
-
-
+                int df = offsetItems.size();
+                // this is here for demonstration, each token items postingItems size gives the df
 
 
 
                 for (OffsetItem offsetItem : offsetItems) {
-                    tokenItem.postingItem.add(offsetItem.postingItem);
-
+                    tokenItem.postingItems.add(offsetItem.postingItem);
 
 
                 }
+
+
 
                 docs.add(tokenItem);
 
