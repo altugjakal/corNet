@@ -95,17 +95,21 @@ public class PostingsList {
         File file = new File(filePath);
         int offset = (int) file.length();
 
-        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, true))) {
+        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, false))) {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
 
 
 
 
+
+
+                    List<PostingItem> postings = entry.getValue();
+                    postings.sort(Comparator.comparingInt(p -> p.docId));
+
                     int setOffset = offset;
                     dos.writeInt(entry.getValue().size());
-
                     offset += 4;
-                    for (PostingItem p : entry.getValue()){
+                    for (PostingItem p : postings){
                         int hitsSize = p.hits.size();
 
 
