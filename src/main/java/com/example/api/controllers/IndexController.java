@@ -45,15 +45,14 @@ public class IndexController {
     }
 
     @GetMapping("/search/{query}")
-
+//problem here
     public List<ApiTokenItem> index(@PathVariable String query) {
 
 
-//its idf time baby
+
         String[] tokens = query.split(" ");
 
         SearchIndex searchIndex = new SearchIndex(dictionary, postingsList);
-
 
         List<String> terms = new ArrayList<String>(Arrays.asList(tokens));
 

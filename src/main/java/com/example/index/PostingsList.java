@@ -49,19 +49,13 @@ public class PostingsList {
             int docId = raf.readInt();
 
 
-
-            ArrayList<HitItem> hits = new ArrayList<>();
-
             int hitLength = raf.readInt();
-
-
+            ArrayList<HitItem> hits = new ArrayList<>(hitLength);
 
             for (int j = 0; j < hitLength; j++){
                 HitItem hit = new HitItem();
                 hit.weight = raf.readInt();
                 hit.position = raf.readInt();
-
-
                 hits.add(hit);
 
             }
@@ -74,8 +68,6 @@ public class PostingsList {
             int tf = hitLength;
             //tf is per document and hits are also returned so you might just not return tf at all, send idf as an extra  variable
 
-
-
             offsetItem.postingItem.hits = hits;
             // length of positions is basically the tf per passage,
             // or store weight and position as pairs and read together in the loop, --ended up doing this
@@ -84,7 +76,6 @@ public class PostingsList {
             results.add(offsetItem);
             //send tfidf with it, the other end has to get data in this format: docData: tfidf for vecor calculation
         }
-
 
             //return results and idf as idf is global for this, or multiply tf's and idf's to get a general score in the result object
         return results;
@@ -97,9 +88,6 @@ public class PostingsList {
 
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, false))) {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
-
-
-
 
 
 
