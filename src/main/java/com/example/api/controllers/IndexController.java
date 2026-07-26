@@ -3,6 +3,7 @@ package com.example.api.controllers;
 import com.example.index.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -39,13 +40,14 @@ public class IndexController {
     }
 
     @PostMapping("/commit")
-    public void index() {
+    public ResponseEntity<Void> index() {
         indexWriter.commit();
+        return ResponseEntity.accepted().build();
 
     }
 
     @GetMapping("/search/{query}")
-//problem here
+
     public List<ApiTokenItem> index(@PathVariable String query) {
 
 

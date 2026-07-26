@@ -7,15 +7,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Dictionary   {
-    private HashMap<String, Integer> items;
+    private ConcurrentHashMap<String, Integer> items;
     private String filePath;
 
     public Dictionary(String filePath) {
         this.filePath = filePath;
-        this.items = new HashMap<>();
+        this.items = new ConcurrentHashMap<>();
 
 
     }
@@ -25,13 +26,13 @@ public class Dictionary   {
     public void load() {
 
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
-            items = (HashMap<String, Integer>) ois.readObject();
+            items = (ConcurrentHashMap<String, Integer>) ois.readObject();
 
 
 
         } catch (EOFException | ClassNotFoundException e){
 
-            items = new HashMap<>();
+            items = new ConcurrentHashMap<>();
         } catch (IOException e) {
 
             throw new RuntimeException(e);

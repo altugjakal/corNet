@@ -16,9 +16,14 @@ public class SearchIndex {
     }
 
     public List<ApiTokenItem> searchByTokens(List<String> tokens) {
-        //combine idf's somehow?? read more -read more use vector model on the other end
+        //combine idf's somehow?? read more -read more use vector model on the other end - done
         List<ApiTokenItem> docs = new ArrayList<>();
-        for (String token: tokens ) {
+        List<String> uniqueTokens = tokens.stream()
+                .distinct()
+                .toList();
+
+
+        for (String token: uniqueTokens ) {
             Integer offset = this.dictionary.getOffset(token);
 
 

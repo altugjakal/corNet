@@ -2,11 +2,12 @@ package com.example.index;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
     private String filePath;
     private Dictionary dictionary;
-    private HashMap<String, List<PostingItem>> map;
+    private ConcurrentHashMap<String, List<PostingItem>> map;
 
 
 
@@ -15,7 +16,7 @@ public class PostingsList {
     public PostingsList(Dictionary dictionary, String filePath) {
         this.dictionary = dictionary;
         this.filePath = filePath;
-        this.map = new HashMap<>();
+        this.map = new ConcurrentHashMap<>();
 
     }
 

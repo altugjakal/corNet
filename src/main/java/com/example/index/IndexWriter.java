@@ -1,5 +1,7 @@
 package com.example.index;
 
+import org.springframework.scheduling.annotation.Async;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +22,15 @@ public class IndexWriter {
 
     }
 
-    public void commit() {
-        this.postingsList.save(); //order matters here, don't fuck it up
-        this.dictionary.save();
-
+    @Async
+    public synchronized void commit() {
+        try {
+            // Order matters here, don't fuck it up
+            this.postingsList.save();
+            this.dictionary.save();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
 }
