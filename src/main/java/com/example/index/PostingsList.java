@@ -18,6 +18,19 @@ public class PostingsList {
         this.filePath = filePath;
         this.map = new ConcurrentHashMap<>();
 
+         File file = new File(filePath);
+         if (!file.exists()) {
+             if (file.getParentFile() != null) {
+                 file.getParentFile().mkdirs();
+             }
+             try {
+                file.createNewFile();
+             } catch (IOException e) {
+                 throw new RuntimeException(e);
+             }
+
+         }
+
     }
 
 

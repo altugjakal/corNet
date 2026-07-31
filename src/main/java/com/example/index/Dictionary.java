@@ -25,20 +25,35 @@ public class Dictionary   {
 
     public void load() {
 
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
-            items = (ConcurrentHashMap<String, Integer>) ois.readObject();
 
 
+        File file = new File(filePath);
 
-        } catch (EOFException | ClassNotFoundException e){
-
-            items = new ConcurrentHashMap<>();
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
+        if (!file.exists()) {
+            if (file.getParentFile() != null) {
+                file.getParentFile().mkdirs();
+            }
+            this.items = new ConcurrentHashMap<>();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
         }
 
+        if (file.length() == 0) {
+            this.items = new ConcurrentHashMap<>();
+            return;
+        }
 
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            this.items = (ConcurrentHashMap<String, Integer>) ois.readObject();
+        } catch (EOFException | ClassNotFoundException e) {
+            this.items = new ConcurrentHashMap<>();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read dictionary file", e);
+        }
     }
 
 
