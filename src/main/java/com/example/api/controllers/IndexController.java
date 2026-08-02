@@ -1,8 +1,8 @@
 package com.example.api.controllers;
 
 import com.example.index.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +16,9 @@ public class IndexController {
     private Dictionary dictionary = new Dictionary("src/files/dictionary.bin");
     private PostingsList postingsList = new PostingsList(dictionary, "src/files/postings.bin");
     private IndexWriter indexWriter = new IndexWriter(dictionary, postingsList);
+
+    private final ExecutorService commitExecutor = Executors.newSingleThreadExecutor();
+
 
     public IndexController() {
         dictionary.load();
@@ -41,7 +44,14 @@ public class IndexController {
 
     @PostMapping("/commit")
     public ResponseEntity<Void> index() {
-        indexWriter.commit();
+
+        commitExecutor.submit(() -> {
+            try {
+                indexWriter.commit();
+            } catch (Exception e) {
+                System.err.println("Failed to execute heavy commit: " + e.getMessage());
+            }
+        });
         return ResponseEntity.accepted().build();
 
     }
