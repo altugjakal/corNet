@@ -5,36 +5,22 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
-    private String filePath;
     private Dictionary dictionary;
     private ConcurrentHashMap<String, List<PostingItem>> map;
 
-
-
-
-
-    public PostingsList(Dictionary dictionary, String filePath) {
+    public PostingsList(Dictionary dictionary) {
         this.dictionary = dictionary;
-        this.filePath = filePath;
         this.map = new ConcurrentHashMap<>();
-
-         File file = new File(filePath);
-         if (!file.exists()) {
-             if (file.getParentFile() != null) {
-                 file.getParentFile().mkdirs();
-             }
-             try {
-                file.createNewFile();
-             } catch (IOException e) {
-                 throw new RuntimeException(e);
-             }
-
-         }
-
     }
 
 
     public void add(int docId, Map<String, List<HitItem>> pairs ) {
+        if (map.size() > 5){
+            System.out.println("aww");
+            throw new OutOfMemoryError();
+        }
+
+
         for (var entry : pairs.entrySet()) {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
@@ -43,14 +29,16 @@ public class PostingsList {
             item.docId = docId;
             item.hits.addAll(hits);
 
+
+
             map.computeIfAbsent(word, k -> new ArrayList<>())
                     .add(item);
         }
     }
 
-    public List<OffsetItem> getByOffset(int offset) throws IOException {
-        // make this return an idf score and some items that contain tf's and other data so make a new type please
-        try(RandomAccessFile raf = new RandomAccessFile(this.filePath, "r")) {
+    public List<OffsetItem> getByOffset(int offset, String filePath) throws IOException {
+        // loop through all files in the files directory on the other side
+        try(RandomAccessFile raf = new RandomAccessFile(filePath, "r")) {
         List<OffsetItem> results = new ArrayList<>();
         raf.seek(offset);
 
@@ -80,7 +68,7 @@ public class PostingsList {
             offsetItem.postingItem.docId = docId;
 
             int tf = hitLength;
-            //tf is per document and hits are also returned so you might just not return tf at all, send idf as an extra  variable
+            //tf is per document and hits are also returned so you might just not return tf at all, send idf as an extra variable, or dont
 
             offsetItem.postingItem.hits = hits;
             // length of positions is basically the tf per passage,
@@ -96,8 +84,21 @@ public class PostingsList {
         }
     }
 
-    public void save(){
+    public void save(String filePath){
+
         File file = new File(filePath);
+        if (!file.exists()) {
+            if (file.getParentFile() != null) {
+                file.getParentFile().mkdirs();
+            }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
         int offset = (int) file.length();
 
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, false))) {

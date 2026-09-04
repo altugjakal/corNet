@@ -11,36 +11,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class Dictionary   {
-    private ConcurrentHashMap<String, Integer> items;
-    private String filePath;
+    public ConcurrentHashMap<String, Integer> items;
+    public String loadPath;
+    public String savePath;
 
-    public Dictionary(String filePath) {
-        this.filePath = filePath;
+    public Dictionary() {
         this.items = new ConcurrentHashMap<>();
-
+        this.loadPath = "";
+        this.savePath = "";
 
     }
 
-
-
-    public void load() {
-
-
+    public void load(String filePath) {
 
         File file = new File(filePath);
 
-        if (!file.exists()) {
-            if (file.getParentFile() != null) {
-                file.getParentFile().mkdirs();
-            }
-            this.items = new ConcurrentHashMap<>();
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return;
-        }
+
+
 
         if (file.length() == 0) {
             this.items = new ConcurrentHashMap<>();
@@ -54,16 +41,33 @@ public class Dictionary   {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read dictionary file", e);
         }
+
+        this.loadPath = filePath;
     }
 
 
-    public void save() {
+    public void save(String filePath) {
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            if (file.getParentFile() != null) {
+                file.getParentFile().mkdirs();
+            }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
             oos.writeObject(items);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.savePath = filePath;
 
     }
 

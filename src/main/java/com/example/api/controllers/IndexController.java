@@ -13,15 +13,15 @@ import java.util.Map;
 
 @RestController
 public class IndexController {
-    private Dictionary dictionary = new Dictionary("src/files/dictionary.bin");
-    private PostingsList postingsList = new PostingsList(dictionary, "src/files/postings.bin");
-    private IndexWriter indexWriter = new IndexWriter(dictionary, postingsList);
+    private DictionaryRouter dictionaryRouter = new DictionaryRouter();
+    private IndexWriter indexWriter = new IndexWriter(dictionaryRouter);
 
     private final ExecutorService commitExecutor = Executors.newSingleThreadExecutor();
 
 
     public IndexController() {
-        dictionary.load();
+
+
     }
 
     public static class InsertRequest {
@@ -43,28 +43,25 @@ public class IndexController {
     }
 
     @PostMapping("/commit")
-    public ResponseEntity<Void> index() {
+    public void index() {
 
-        commitExecutor.submit(() -> {
-            try {
-                indexWriter.commit();
-            } catch (Exception e) {
-                System.err.println("Failed to execute heavy commit: " + e.getMessage());
-            }
-        });
-        return ResponseEntity.accepted().build();
+        indexWriter.emergencyDump();
+
 
     }
+
+
 
     @GetMapping("/search/{query}")
 
     public List<ApiTokenItem> index(@PathVariable String query) {
 
+        SearchIndex searchIndex = new SearchIndex(dictionaryRouter);
 
 
         String[] tokens = query.split(" ");
 
-        SearchIndex searchIndex = new SearchIndex(dictionary, postingsList);
+
 
         List<String> terms = new ArrayList<String>(Arrays.asList(tokens));
 
