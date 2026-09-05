@@ -52,6 +52,10 @@ public class SearchIndex {
         File postingsDir = new File("src/files/postings/");
 
         File[] postingFileListings = postingsDir.listFiles();
+        if (postingFileListings == null || postingFileListings.length == 0) {
+            return new ArrayList<ApiTokenItem>();
+        }
+
         Arrays.sort(postingFileListings);
 
         for (int i = 0; i < dictionaries.size(); i++) {

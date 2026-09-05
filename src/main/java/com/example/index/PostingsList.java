@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
     private final Dictionary dictionary;
-    private final ConcurrentHashMap<String, List<PostingItem>> map;
+    public final ConcurrentHashMap<String, List<PostingItem>> map;
 
     public PostingsList(Dictionary dictionary) {
         this.dictionary = dictionary;

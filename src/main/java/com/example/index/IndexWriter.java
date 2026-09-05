@@ -82,14 +82,14 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void emergencyDump() {
 
-        if (!dictionary.items.isEmpty()) {
+        if (!postingsList.map.isEmpty()) {
 
-        saveDisk();
-        this.dictionaryRouter.submit(saveCount, this.dictionary);
-        this.dictionary = new Dictionary();
-        this.postingsList = new PostingsList(dictionary);
+            saveDisk();
+            this.dictionaryRouter.submit(saveCount, this.dictionary);
+            this.dictionary = new Dictionary();
+            this.postingsList = new PostingsList(dictionary);
 
-        saveCount++;
+            saveCount++;
         }
         try (Writer wr = new FileWriter( configPath)) { wr.write(Integer.toString(saveCount)); } catch (IOException e) { e.printStackTrace(); }
 
