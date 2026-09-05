@@ -15,7 +15,11 @@ public class DictionaryRouter {
         File postingsDir = new File("src/files/dicts/");
 
         File[] postingFileListings = postingsDir.listFiles();
-        Arrays.sort(postingFileListings);
+
+        if (postingFileListings == null || postingFileListings.length == 0) {
+            return;
+        }
+
         for(int i = 0; i < postingFileListings.length; i++){
             Dictionary dictionary = new Dictionary();
             dictionary.load(postingFileListings[i].getPath());

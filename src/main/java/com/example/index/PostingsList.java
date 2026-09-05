@@ -5,8 +5,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
-    private Dictionary dictionary;
-    private ConcurrentHashMap<String, List<PostingItem>> map;
+    private final Dictionary dictionary;
+    private final ConcurrentHashMap<String, List<PostingItem>> map;
 
     public PostingsList(Dictionary dictionary) {
         this.dictionary = dictionary;
@@ -15,10 +15,7 @@ public class PostingsList {
 
 
     public void add(int docId, Map<String, List<HitItem>> pairs ) {
-        if (map.size() > 5){
-            System.out.println("aww");
-            throw new OutOfMemoryError();
-        }
+
 
 
         for (var entry : pairs.entrySet()) {

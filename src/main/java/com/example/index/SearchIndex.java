@@ -60,7 +60,6 @@ public class SearchIndex {
             for (String token: uniqueTokens ) {
 
                 Integer offset = pair.dictionary.getOffset(token);
-                System.out.println(offset + token + pair.dictionary.loadPath + postingFileListings[i].getPath());
 
 
                 if (offset == null) {

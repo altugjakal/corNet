@@ -21,7 +21,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     private Dictionary dictionary;
     private PostingsList postingsList;
     private final DictionaryRouter dictionaryRouter;
-    private String configPath = "src/files/config.cfg";
+    private final String configPath = "src/files/config.cfg";
     public static int saveCount;
 
 
