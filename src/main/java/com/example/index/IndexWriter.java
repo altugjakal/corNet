@@ -58,6 +58,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
         String postingFileName = "_" + saveCount + ".bin";
         String dictFileName = "_" + saveCount + ".dic";
+
         this.postingsList.save("src/files/postings/" + postingFileName);
         this.dictionary.save("src/files/dicts/" + dictFileName);
 

@@ -3,7 +3,6 @@ package com.example.index;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component

@@ -17,7 +17,6 @@ public class PostingsList {
     public void add(int docId, Map<String, List<HitItem>> pairs ) {
 
 
-
         for (var entry : pairs.entrySet()) {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
