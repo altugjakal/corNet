@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PostingsList {
     private final Dictionary dictionary;
     public final ConcurrentHashMap<String, List<PostingItem>> map;
+    public String lastSavePath = "";
 
     public PostingsList(Dictionary dictionary) {
         this.dictionary = dictionary;
@@ -27,6 +28,8 @@ public class PostingsList {
 
 
 
+
+
             map.computeIfAbsent(word, k -> new ArrayList<>())
                     .add(item);
         }
@@ -34,11 +37,15 @@ public class PostingsList {
 
     public List<OffsetItem> getByOffset(int offset, String filePath) throws IOException {
         // loop through all files in the files directory on the other side
-        try(RandomAccessFile raf = new RandomAccessFile(filePath, "r")) {
+
+
+        try(RandomAccessFile raf = new RandomAccessFile((filePath == null ? lastSavePath : filePath), "r")) {
         List<OffsetItem> results = new ArrayList<>();
         raf.seek(offset);
 
+
         int count = raf.readInt();
+
 
 
         Float idf = (1 / (float) count);
@@ -82,7 +89,23 @@ public class PostingsList {
 
     public void save(String filePath){
 
+
+
+
+        for (Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
+            System.out.println("key: " + entry.getKey());
+
+            // Nested loop to iterate over the list of PostingItems
+            for (PostingItem item : entry.getValue()) {
+                System.out.println("  PostingItem docId: " + item.docId);
+            }
+        }
+
+
+
+
         File file = new File(filePath);
+        lastSavePath = filePath;
         if (!file.exists()) {
             if (file.getParentFile() != null) {
                 file.getParentFile().mkdirs();
@@ -95,7 +118,7 @@ public class PostingsList {
 
         }
 
-        int offset = (int) file.length();
+        int offset = 0;
 
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, false))) {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {

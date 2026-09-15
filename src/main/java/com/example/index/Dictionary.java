@@ -17,7 +17,7 @@ public class Dictionary   {
 
     }
 
-    public static class DictItem {
+    public static class DictItem implements Serializable {
         public String token;
         public Integer offset;
 
@@ -78,7 +78,7 @@ public class Dictionary   {
             }
         }
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath, false))) {
             oos.writeObject(items);
 
         } catch (IOException e) {
@@ -101,7 +101,7 @@ public class Dictionary   {
     public Integer getOffset(String token) {
 
         int dictIndex = Collections.binarySearch(items, new DictItem(token, 1), new TokenComparator());
-        if(dictIndex == -1) {
+        if(dictIndex < 0) {
             return -1;
         }
         DictItem dictItem = items.get(dictIndex);

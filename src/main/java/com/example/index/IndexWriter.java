@@ -36,6 +36,10 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     }
 
+    public void decrementSaveCount() {
+        saveCount = saveCount-1;
+    }
+
 
     public void load() {
         Path path = Paths.get(configPath);
@@ -66,12 +70,14 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void write(int docId, Map<String, List<HitItem>> pairs) {
         try {
-        this.postingsList.add(docId, pairs);
+            if (postingsList.map.size() > 4) {throw new OutOfMemoryError();}
+            this.postingsList.add(docId, pairs);
         } catch (OutOfMemoryError e) {
 
 
             saveDisk();
-            this.dictionaryRouter.submit(saveCount, this.dictionary);
+            DictionaryRouter.DictPostingPair dictPostingPair = new DictionaryRouter.DictPostingPair(dictionary, postingsList);
+            this.dictionaryRouter.submit(saveCount, dictPostingPair);
             this.dictionary = new Dictionary();
             this.postingsList = new PostingsList(dictionary);
             this.postingsList.add(docId, pairs);
@@ -86,7 +92,8 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
         if (!postingsList.map.isEmpty()) {
 
             saveDisk();
-            this.dictionaryRouter.submit(saveCount, this.dictionary);
+            DictionaryRouter.DictPostingPair dictPostingPair = new DictionaryRouter.DictPostingPair(dictionary, postingsList);
+            this.dictionaryRouter.submit(saveCount, dictPostingPair);
             this.dictionary = new Dictionary();
             this.postingsList = new PostingsList(dictionary);
 

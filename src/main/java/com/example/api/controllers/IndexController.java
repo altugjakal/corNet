@@ -1,6 +1,8 @@
 package com.example.api.controllers;
 
 import com.example.index.*;
+
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ public class IndexController {
 
     public IndexController() {
 
+            MergeScheduler mergeScheduler = new MergeScheduler(10, 2, dictionaryRouter, indexWriter);
+            mergeScheduler.start();
 
     }
 
@@ -49,6 +53,8 @@ public class IndexController {
 
 
     }
+
+
 
 
 

@@ -9,35 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class SearchIndex {
-    private ConcurrentHashMap<Integer, DictPostingPair> dictionaries;
     private DictionaryRouter dictionaryRouter;
-
-    public static class DictPostingPair {
-        public Dictionary dictionary;
-        public PostingsList postingsList;
-
-        public DictPostingPair(Dictionary dictionary, PostingsList postingsList) {
-            this.dictionary = dictionary;
-            this.postingsList = postingsList;
-        }
-
-    }
 
 
     public SearchIndex(DictionaryRouter dictionaryRouter) {
         this.dictionaryRouter = dictionaryRouter;
-        this.dictionaries = new ConcurrentHashMap<>();
-
-
-        for (int i = 0; i < this.dictionaryRouter.dictionaries.size(); i++) {
-            Dictionary dictionary = dictionaryRouter.dictionaries.get(i);
-            PostingsList postingsList = new PostingsList(dictionary);
-            DictPostingPair pair = new DictPostingPair(dictionary, postingsList);
-
-            this.dictionaries.put(i, pair);
-        }
-
-
 
     }
 
@@ -49,21 +25,15 @@ public class SearchIndex {
                 .toList();
 
 
-        File postingsDir = new File("src/files/postings/");
 
-        File[] postingFileListings = postingsDir.listFiles();
-        if (postingFileListings == null || postingFileListings.length == 0) {
-            return new ArrayList<ApiTokenItem>();
-        }
 
-        Arrays.sort(postingFileListings);
-
-        for (int i = 0; i < dictionaries.size(); i++) {
-            DictPostingPair pair = this.dictionaries.get(i);
+        for (int i = 0; i < dictionaryRouter.dictionaries.size(); i++) {
+            DictionaryRouter.DictPostingPair pair = this.dictionaryRouter.dictionaries.get(i);
 
             for (String token: uniqueTokens ) {
 
                 Integer offset = pair.dictionary.getOffset(token);
+                System.out.println(offset);
 
 
                 if (offset == null) {
@@ -75,7 +45,7 @@ public class SearchIndex {
 
                 try {
 
-                    List<OffsetItem> offsetItems = pair.postingsList.getByOffset(offset, postingFileListings[i].getPath());
+                    List<OffsetItem> offsetItems = pair.postingsList.getByOffset(offset, pair.postingsList.lastSavePath);
                     int df = offsetItems.size();
                     // this is here for demonstration, each token items postingItems size gives the df
 
