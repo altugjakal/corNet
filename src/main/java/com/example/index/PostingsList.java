@@ -2,6 +2,7 @@ package com.example.index;
 
 import java.io.*;
 import java.util.*;
+import com.example.index.FileManager;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
