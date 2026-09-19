@@ -70,7 +70,6 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void write(int docId, Map<String, List<HitItem>> pairs) {
         try {
-            if (postingsList.map.size() > 4) {throw new OutOfMemoryError();}
             this.postingsList.add(docId, pairs);
         } catch (OutOfMemoryError e) {
 
