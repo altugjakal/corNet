@@ -23,7 +23,7 @@ public class IndexController {
 
     public IndexController() {
 
-            MergeScheduler mergeScheduler = new MergeScheduler(10, 2, dictionaryRouter, indexWriter);
+            MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter);
             mergeScheduler.start();
 
     }

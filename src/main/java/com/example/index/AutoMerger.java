@@ -168,8 +168,8 @@ public class AutoMerger {
 
         File extinctDictFile = new File("src/files/dicts/" + "_" + fileOrderTwo + ".dic");
         File extinctPostingsFile =  new File("src/files/postings/" + "_" + fileOrderTwo + ".bin");
-        extinctPostingsFile.delete();
-        extinctDictFile.delete();
+        FileManager.delete(extinctPostingsFile);
+        FileManager.delete(extinctDictFile);
 
 
 

@@ -38,8 +38,9 @@ public class PostingsList {
     public List<OffsetItem> getByOffset(int offset, String filePath) throws IOException {
         // loop through all files in the files directory on the other side
 
-
-        try(RandomAccessFile raf = new RandomAccessFile((filePath == null ? lastSavePath : filePath), "r")) {
+        try (RandomAccessFile raf = FileManager.startReadStreamer(
+                filePath == null ? lastSavePath : filePath
+        )) {
         List<OffsetItem> results = new ArrayList<>();
         raf.seek(offset);
 
@@ -98,6 +99,7 @@ public class PostingsList {
             // Nested loop to iterate over the list of PostingItems
             for (PostingItem item : entry.getValue()) {
                 System.out.println("  PostingItem docId: " + item.docId);
+                System.out.println("  PostingItem docId: " + item.hits.size());
             }
         }
 
@@ -120,7 +122,7 @@ public class PostingsList {
 
         int offset = 0;
 
-        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(file, false))) {
+        try {
             for(Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
 
 
@@ -129,27 +131,28 @@ public class PostingsList {
                     postings.sort(Comparator.comparingInt(p -> p.docId));
 
                     int setOffset = offset;
-                    dos.writeInt(entry.getValue().size());
+                    FileManager.writeInt(entry.getValue().size());
                     offset += 4;
                     for (PostingItem p : postings){
                         int hitsSize = p.hits.size();
 
 
-                        dos.writeInt(p.docId);
-                        dos.writeInt(hitsSize);
+                        FileManager.writeInt(p.docId);
+                        FileManager.writeInt(hitsSize);
                         offset += 8;
 
                         for (int i = 0; i < hitsSize; i++) {
-                            dos.writeInt(p.hits.get(i).weight);
-                            dos.writeInt(p.hits.get(i).position);
+                            FileManager.writeInt(p.hits.get(i).weight);
+                            FileManager.writeInt(p.hits.get(i).position);
                             offset += 8;
                         }
                     }
                     dictionary.add(entry.getKey(), setOffset);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+
+            FileManager.startWriteStream(file);
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
