@@ -16,15 +16,20 @@ import java.util.Map;
 @RestController
 public class IndexController {
     private DictionaryRouter dictionaryRouter = new DictionaryRouter();
-    private IndexWriter indexWriter = new IndexWriter(dictionaryRouter);
+    private IndexWriter indexWriter;
 
-    private final ExecutorService commitExecutor = Executors.newSingleThreadExecutor();
 
 
     public IndexController() {
 
-            MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter);
+
+            SideFileWriter sideFileWriter = new SideFileWriter(dictionaryRouter);
+            sideFileWriter.start();
+            indexWriter = new IndexWriter(dictionaryRouter, sideFileWriter);
+            MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter, sideFileWriter);
             mergeScheduler.start();
+
+
 
     }
 

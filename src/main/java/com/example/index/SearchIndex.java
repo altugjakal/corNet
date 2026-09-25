@@ -28,7 +28,7 @@ public class SearchIndex {
 
 
         for (int i = 0; i < dictionaryRouter.dictionaries.size(); i++) {
-            DictionaryRouter.DictPostingPair pair = this.dictionaryRouter.dictionaries.get(i);
+            DictPostingPair pair = this.dictionaryRouter.dictionaries.get(i);
 
             for (String token: uniqueTokens ) {
 

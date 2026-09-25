@@ -9,16 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DictionaryRouter {
 
-    public static class DictPostingPair {
-        public Dictionary dictionary;
-        public PostingsList postingsList;
 
-        public DictPostingPair(Dictionary dictionary, PostingsList postingsList) {
-            this.dictionary = dictionary;
-            this.postingsList = postingsList;
-        }
-
-    }
 
     public ConcurrentHashMap<Integer, DictPostingPair> dictionaries = new ConcurrentHashMap<>();
 

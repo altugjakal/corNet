@@ -10,17 +10,19 @@ import java.util.Map;
 public class AutoMerger {
     private DictionaryRouter dictionaryRouter;
     private IndexWriter indexWriter;
+    private SideFileWriter sideFileWriter;
 
-    public AutoMerger(IndexWriter indexWriter, DictionaryRouter dictionaryRouter) {
+    public AutoMerger(IndexWriter indexWriter, DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter) {
         this.indexWriter = indexWriter;
         this.dictionaryRouter = dictionaryRouter;
+        this.sideFileWriter = sideFileWriter;
     }
 
     public void merge( int fileOrderOne, int fileOrderTwo) throws IOException {
         //implement two pointer, file ikds are currently hasrdcoded, get file index as parameter
 
 
-        indexWriter.decrementSaveCount();
+        this.indexWriter.decrementSaveCount();
         Dictionary newDictionary = new Dictionary();
         PostingsList newPostingslist = new PostingsList(newDictionary);
 
@@ -29,8 +31,8 @@ public class AutoMerger {
         }
 
 
-        DictionaryRouter.DictPostingPair dictionaryOne = dictionaryRouter.dictionaries.get(fileOrderOne);
-        DictionaryRouter.DictPostingPair dictionaryTwo = dictionaryRouter.dictionaries.get(fileOrderTwo);
+        DictPostingPair dictionaryOne = dictionaryRouter.dictionaries.get(fileOrderOne);
+        DictPostingPair dictionaryTwo = dictionaryRouter.dictionaries.get(fileOrderTwo);
 
 
 
@@ -163,22 +165,13 @@ public class AutoMerger {
         }
 
 
-        String postingFileName = "_" + fileOrderOne + ".bin";
-        String dictFileName = "_" + fileOrderOne + ".dic";
 
         File extinctDictFile = new File("src/files/dicts/" + "_" + fileOrderTwo + ".dic");
         File extinctPostingsFile =  new File("src/files/postings/" + "_" + fileOrderTwo + ".bin");
         FileManager.delete(extinctPostingsFile);
         FileManager.delete(extinctDictFile);
 
-
-
-        newPostingslist.save("src/files/postings/" + postingFileName);
-        newDictionary.save("src/files/dicts/" + dictFileName);
-
-
-        DictionaryRouter.DictPostingPair dictPostingPair = new DictionaryRouter.DictPostingPair(newDictionary, newPostingslist);
-        dictionaryRouter.submit(fileOrderOne, dictPostingPair);
+        sideFileWriter.addToQueue(fileOrderOne, newDictionary, newPostingslist);
         dictionaryRouter.delete(fileOrderTwo);
 
     }

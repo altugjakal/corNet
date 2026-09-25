@@ -10,9 +10,9 @@ public class MergeScheduler extends Thread {
     public DictionaryRouter dictionaryRouter;
     public Integer activeFileCount;
     private boolean workerWorking;
-    public MergeScheduler(Integer waitInterval, Integer fileCountThreshold,  DictionaryRouter dictionaryRouter, IndexWriter indexWriter) {
+    public MergeScheduler(Integer waitInterval, Integer fileCountThreshold,  DictionaryRouter dictionaryRouter, IndexWriter indexWriter, SideFileWriter sideFileWriter) {
         this.waitInterval = waitInterval;
-        this.autoMerger = new AutoMerger(indexWriter, dictionaryRouter);
+        this.autoMerger = new AutoMerger(indexWriter, dictionaryRouter, sideFileWriter);
         this.dictionaryRouter = dictionaryRouter;
 
         this.fileCountThreshold = (fileCountThreshold == null ? fileCountThreshold : 2);
@@ -33,7 +33,7 @@ public class MergeScheduler extends Thread {
     public void stopWorker() {
         workerWorking = false;
     }
-
+    //hottest oneliners to get chicks
     public void startWorker() {
         workerWorking=true;
     }

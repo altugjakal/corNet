@@ -22,14 +22,16 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     private PostingsList postingsList;
     private final DictionaryRouter dictionaryRouter;
     private final String configPath = "src/files/config.cfg";
+    private SideFileWriter sideFileWriter;
     public static int saveCount;
 
 
 
-    public IndexWriter(DictionaryRouter dictionaryRouter) {
+    public IndexWriter(DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter) {
         this.dictionaryRouter = dictionaryRouter;
         this.dictionary = new Dictionary();
         this.postingsList = new PostingsList(dictionary);
+        this.sideFileWriter = sideFileWriter;
         load();
 
 
@@ -58,25 +60,17 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
         saveCount = 0;
     }
 
-    private void saveDisk() {
 
-        String postingFileName = "_" + saveCount + ".bin";
-        String dictFileName = "_" + saveCount + ".dic";
-
-        this.postingsList.save("src/files/postings/" + postingFileName);
-        this.dictionary.save("src/files/dicts/" + dictFileName);
-
-    }
 
     public void write(int docId, Map<String, List<HitItem>> pairs) {
         try {
+            //if (postingsList.map.size() > 5) {throw new OutOfMemoryError();}
             this.postingsList.add(docId, pairs);
         } catch (OutOfMemoryError e) {
 
 
-            saveDisk();
-            DictionaryRouter.DictPostingPair dictPostingPair = new DictionaryRouter.DictPostingPair(dictionary, postingsList);
-            this.dictionaryRouter.submit(saveCount, dictPostingPair);
+            sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
+
             this.dictionary = new Dictionary();
             this.postingsList = new PostingsList(dictionary);
             this.postingsList.add(docId, pairs);
@@ -90,9 +84,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
         if (!postingsList.map.isEmpty()) {
 
-            saveDisk();
-            DictionaryRouter.DictPostingPair dictPostingPair = new DictionaryRouter.DictPostingPair(dictionary, postingsList);
-            this.dictionaryRouter.submit(saveCount, dictPostingPair);
+            sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
             this.dictionary = new Dictionary();
             this.postingsList = new PostingsList(dictionary);
 
