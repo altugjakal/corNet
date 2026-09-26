@@ -1,4 +1,4 @@
-package com.example.index;
+package com.example.index.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;

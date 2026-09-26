@@ -2,6 +2,8 @@ package com.example.index;
 
 
 
+import com.example.index.types.HitItem;
+import com.example.index.utils.Config;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     private final String configPath = "src/files/config.cfg";
     private SideFileWriter sideFileWriter;
     public static int saveCount;
+    private int insertCount;
 
 
 
@@ -63,10 +66,10 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
 
     public void write(int docId, Map<String, List<HitItem>> pairs) {
-        try {
-            //if (postingsList.map.size() > 5) {throw new OutOfMemoryError();}
+        if(insertCount < Config.getDumpMaxInsertions()) {
+            insertCount++;
             this.postingsList.add(docId, pairs);
-        } catch (OutOfMemoryError e) {
+        } else {
 
 
             sideFileWriter.addToQueue(saveCount, dictionary, postingsList);

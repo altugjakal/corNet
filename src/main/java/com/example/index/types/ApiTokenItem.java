@@ -1,4 +1,4 @@
-package com.example.index;
+package com.example.index.types;
 
 import java.util.ArrayList;
 import java.util.List;

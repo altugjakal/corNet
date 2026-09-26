@@ -1,11 +1,12 @@
 package com.example.index;
 
-import java.io.File;
+import com.example.index.types.ApiTokenItem;
+import com.example.index.types.DictPostingPair;
+import com.example.index.types.OffsetItem;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class SearchIndex {

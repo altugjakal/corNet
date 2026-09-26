@@ -2,7 +2,11 @@ package com.example.index;
 
 import java.io.*;
 import java.util.*;
-import com.example.index.FileManager;
+
+import com.example.index.types.HitItem;
+import com.example.index.types.OffsetItem;
+import com.example.index.types.PostingItem;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {

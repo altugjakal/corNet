@@ -1,4 +1,7 @@
-package com.example.index;
+package com.example.index.types;
+
+import com.example.index.Dictionary;
+import com.example.index.PostingsList;
 
 import java.io.Serializable;
 

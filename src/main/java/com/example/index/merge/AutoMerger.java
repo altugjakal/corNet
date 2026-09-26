@@ -1,5 +1,9 @@
-package com.example.index;
-import com.example.index.FileManager;
+package com.example.index.merge;
+import com.example.index.*;
+import com.example.index.types.DictPostingPair;
+import com.example.index.types.HitItem;
+import com.example.index.types.OffsetItem;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

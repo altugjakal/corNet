@@ -1,5 +1,6 @@
 package com.example.index;
 
+import com.example.index.types.DictPostingPair;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
