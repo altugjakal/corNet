@@ -5,6 +5,9 @@ _  /    _  __ \_  ___/_   |/ /_  _ \  __/
 / /___  / /_/ /  /   _  /|  / /  __/ /_  
 \____/  \____//_/    /_/ |_/  \___/\__/
 ```
+![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/Status-Active%20Development-orange.svg)
 
 
 **CorNet** is a segment inverted index system designed for flexible data indexing and retrieval. Initiated in April 2026 as a static inverted index, CorNet was later rewritten as a segmented inverted index to handle dynamic workloads efficiently. 
