@@ -2,6 +2,7 @@ package com.example.index;
 
 
 
+import com.example.index.types.DocumentMetaItem;
 import com.example.index.types.HitItem;
 import com.example.index.utils.Config;
 import org.springframework.context.ApplicationListener;
@@ -26,12 +27,14 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     private final String configPath = "src/files/config.cfg";
     private SideFileWriter sideFileWriter;
     public static int saveCount;
+    public DocumentMetaIndex documentMetaIndex;
     private int insertCount;
 
 
 
-    public IndexWriter(DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter) {
+    public IndexWriter(DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter, DocumentMetaIndex documentMetaIndex) {
         this.dictionaryRouter = dictionaryRouter;
+        this.documentMetaIndex = documentMetaIndex;
         this.dictionary = new Dictionary();
         this.postingsList = new PostingsList(dictionary);
         this.sideFileWriter = sideFileWriter;
@@ -48,7 +51,6 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void load() {
         Path path = Paths.get(configPath);
-
         if (Files.exists(path)) {
             try (Scanner scanner = new Scanner(path)) {
                 if (scanner.hasNextInt()) {
@@ -68,18 +70,21 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     public void write(int docId, Map<String, List<HitItem>> pairs) {
         if(insertCount < Config.getDumpMaxInsertions()) {
             insertCount++;
-            this.postingsList.add(docId, pairs);
         } else {
-
 
             sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
 
             this.dictionary = new Dictionary();
             this.postingsList = new PostingsList(dictionary);
-            this.postingsList.add(docId, pairs);
+
             saveCount++;
         }
 
+
+        DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs); // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
+
+        //mega TODO: before doing this check if anchors are inserted or not
+        this.documentMetaIndex.add(docId, documentMetaItem);
 
     }
 

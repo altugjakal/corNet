@@ -3,9 +3,11 @@ package com.example.index;
 import java.io.*;
 import java.util.*;
 
+import com.example.index.types.DocumentMetaItem;
 import com.example.index.types.HitItem;
 import com.example.index.types.OffsetItem;
 import com.example.index.types.PostingItem;
+
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,24 +22,29 @@ public class PostingsList {
     }
 
 
-    public void add(int docId, Map<String, List<HitItem>> pairs ) {
+    public DocumentMetaItem add(int docId, Map<String, List<HitItem>> pairs ) {
 
-
+        int count = 0;
+        HashMap<Integer, Integer> fieldLengths = new HashMap<>();
         for (var entry : pairs.entrySet()) {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
+            for (HitItem hitItem: hits) {
+                fieldLengths.put(hitItem.weight, fieldLengths.getOrDefault(hitItem.weight, 0) + 1);
+            }
 
             PostingItem item = new PostingItem();
             item.docId = docId;
             item.hits.addAll(hits);
-
-
+            count += item.hits.size();
 
 
 
             map.computeIfAbsent(word, k -> new ArrayList<>())
                     .add(item);
         }
+
+        return new DocumentMetaItem(count, fieldLengths);
     }
 
     public List<OffsetItem> getByOffset(int offset, String filePath) throws IOException {

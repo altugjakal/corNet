@@ -1,8 +1,7 @@
 package com.example.index;
 
-import com.example.index.types.ApiTokenItem;
-import com.example.index.types.DictPostingPair;
-import com.example.index.types.OffsetItem;
+import com.example.index.scoring.TfIdf;
+import com.example.index.types.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,10 +10,12 @@ import java.util.List;
 
 public class SearchIndex {
     private DictionaryRouter dictionaryRouter;
+    public DocumentMetaIndex documentMetaIndex;
 
 
-    public SearchIndex(DictionaryRouter dictionaryRouter) {
+    public SearchIndex(DictionaryRouter dictionaryRouter, DocumentMetaIndex documentMetaIndex) {
         this.dictionaryRouter = dictionaryRouter;
+        this.documentMetaIndex = documentMetaIndex;
 
     }
 
@@ -48,11 +49,23 @@ public class SearchIndex {
 
                     List<OffsetItem> offsetItems = pair.postingsList.getByOffset(offset, pair.postingsList.lastSavePath);
                     int df = offsetItems.size();
-                    // this is here for demonstration, each token items postingItems size gives the df
 
 
                     for (OffsetItem offsetItem : offsetItems) {
-                        tokenItem.postingItems.add(offsetItem.postingItem);
+                        DocumentMetaItem documentMetaItem = DocumentMetaIndex.get(offsetItem.postingItem.docId);
+                        float tf = offsetItem.postingItem.hits.size() / DocumentMetaIndex.get(offsetItem.postingItem.docId).contentLength;
+                        for (HitItem hitItem: offsetItem.postingItem.hits)
+                        {
+                            int fieldLength = documentMetaItem.fieldLengths.get(hitItem.weight);
+                            int fieldWeight = hitItem.weight;
+                        }
+                        ScoredPostingItem scoredPostingItem = new ScoredPostingItem();
+                        scoredPostingItem.broadTermWeight = TfIdf.score(tf, df); //encapsulate this - done
+                        scoredPostingItem.hits = offsetItem.postingItem.hits;
+                        scoredPostingItem.docId = offsetItem.postingItem.docId;
+
+                        tokenItem.postingItems.add(scoredPostingItem);
+
                     }
 
                     docs.add(tokenItem);

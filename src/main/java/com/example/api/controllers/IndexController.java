@@ -16,18 +16,19 @@ import java.util.Map;
 public class IndexController {
     private DictionaryRouter dictionaryRouter = new DictionaryRouter();
     private IndexWriter indexWriter;
+    private DocumentMetaIndex documentMetaIndex;
 
 
 
     public IndexController() {
 
-
+            DocumentMetaIndex documentMetaIndex = new DocumentMetaIndex();
+            documentMetaIndex.load(""); // enter filepath from config
             SideFileWriter sideFileWriter = new SideFileWriter(dictionaryRouter);
             sideFileWriter.start();
-            indexWriter = new IndexWriter(dictionaryRouter, sideFileWriter);
+            indexWriter = new IndexWriter(dictionaryRouter, sideFileWriter, documentMetaIndex);
             MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter, sideFileWriter);
             mergeScheduler.start();
-
 
 
     }
@@ -47,7 +48,6 @@ public class IndexController {
 
         indexWriter.write(insertRequest.docId, pairs);
 
-
     }
 
     @PostMapping("/commit")
@@ -66,12 +66,9 @@ public class IndexController {
 
     public List<ApiTokenItem> index(@PathVariable String query) {
 
-        SearchIndex searchIndex = new SearchIndex(dictionaryRouter);
-
+        SearchIndex searchIndex = new SearchIndex(dictionaryRouter, documentMetaIndex);
 
         String[] tokens = query.split(" ");
-
-
 
         List<String> terms = new ArrayList<String>(Arrays.asList(tokens));
 

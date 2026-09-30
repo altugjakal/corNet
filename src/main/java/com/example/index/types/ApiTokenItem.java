@@ -5,6 +5,6 @@ import java.util.List;
 
 public class ApiTokenItem {
     public String token;
-    public List<PostingItem> postingItems = new ArrayList<>();;
+    public List<ScoredPostingItem> postingItems = new ArrayList<>();;
 
 }
