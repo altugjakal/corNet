@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DocumentMetaIndex {
     private static ConcurrentHashMap<Integer, DocumentMetaItem> map;
-    public String loadPath;
+    public static String loadPath;
 
     public void load(String filePath) {
         File file = new File(filePath);
@@ -44,8 +44,8 @@ public class DocumentMetaIndex {
         return map.size();
     }
 
-    public void save()  {
-        File file = new File(this.loadPath);
+    public static void save()  {
+        File file = new File(loadPath);
 
         if (!file.exists()) {
             if (file.getParentFile() != null) {
@@ -58,7 +58,7 @@ public class DocumentMetaIndex {
             }
         }
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.loadPath, false))) {
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(loadPath, false))) {
             oos.writeObject(map);
 
         } catch (IOException e) {

@@ -106,6 +106,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     public void onApplicationEvent(ContextClosedEvent event){
         //if the thing shuts down, save what's left
         emergencyDump();
+        DocumentMetaIndex.save();
 
     }
 

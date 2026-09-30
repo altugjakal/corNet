@@ -37,4 +37,12 @@ public class Config {
 
         }
     }
+
+    public static void setFieldWeight(int fieldId, float fieldWeight) {
+        properties.setProperty("field-" + fieldId, String.valueOf(fieldWeight));
+    }
+
+    public static Integer getFieldWeight(int fieldId) {
+        return Integer.valueOf(properties.getProperty("field-" + fieldId));
+    }
 }

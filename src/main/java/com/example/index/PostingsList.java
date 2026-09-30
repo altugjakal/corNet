@@ -30,7 +30,8 @@ public class PostingsList {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
             for (HitItem hitItem: hits) {
-                fieldLengths.put(hitItem.weight, fieldLengths.getOrDefault(hitItem.weight, 0) + 1);
+                fieldLengths.put(hitItem.fieldId, fieldLengths.getOrDefault(hitItem.fieldId, 0) + 1);
+                //here update global statistics
             }
 
             PostingItem item = new PostingItem();
@@ -72,7 +73,7 @@ public class PostingsList {
 
             for (int j = 0; j < hitLength; j++){
                 HitItem hit = new HitItem();
-                hit.weight = raf.readInt();
+                hit.fieldId = raf.readInt();
                 hit.position = raf.readInt();
                 hits.add(hit);
 
@@ -154,7 +155,7 @@ public class PostingsList {
                         offset += 8;
 
                         for (int i = 0; i < hitsSize; i++) {
-                            FileManager.writeInt(p.hits.get(i).weight);
+                            FileManager.writeInt(p.hits.get(i).fieldId);
                             FileManager.writeInt(p.hits.get(i).position);
                             offset += 8;
                         }

@@ -2,6 +2,7 @@ package com.example.index;
 
 import com.example.index.scoring.TfIdf;
 import com.example.index.types.*;
+import com.example.index.utils.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,8 +57,8 @@ public class SearchIndex {
                         float tf = offsetItem.postingItem.hits.size() / DocumentMetaIndex.get(offsetItem.postingItem.docId).contentLength;
                         for (HitItem hitItem: offsetItem.postingItem.hits)
                         {
-                            int fieldLength = documentMetaItem.fieldLengths.get(hitItem.weight);
-                            int fieldWeight = hitItem.weight;
+                            int fieldLength = documentMetaItem.fieldLengths.get(hitItem.fieldId);
+                            int fieldWeight = Config.getFieldWeight(hitItem.fieldId);
                         }
                         ScoredPostingItem scoredPostingItem = new ScoredPostingItem();
                         scoredPostingItem.broadTermWeight = TfIdf.score(tf, df); //encapsulate this - done
