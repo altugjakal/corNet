@@ -10,7 +10,7 @@ _  /    _  __ \_  ___/_   |/ /_  _ \  __/
 ![Status](https://img.shields.io/badge/Status-Active%20Development-orange.svg)
 
 
-**CorNet** is a segment inverted index system designed for flexible data indexing and retrieval. Initiated in April 2026 as a static inverted index, CorNet was later rewritten as a segmented inverted index to handle dynamic workloads efficiently. 
+**CorNet** is a segmented inverted index system designed for flexible data indexing and retrieval. Initiated in April 2026 as a static inverted index, CorNet was later rewritten as a segmented inverted index to handle dynamic workloads efficiently. 
 
 To keep the project adaptable for a wide range of tasks, all configuration options, posting formats, and dictionary formats are generalized to fit any kind of information storage requirement.
 
