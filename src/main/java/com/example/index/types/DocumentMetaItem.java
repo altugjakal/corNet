@@ -1,8 +1,9 @@
 package com.example.index.types;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class DocumentMetaItem {
+public class DocumentMetaItem implements Serializable {
     public Integer contentLength;
     public HashMap<Integer, Integer> fieldLengths;
 

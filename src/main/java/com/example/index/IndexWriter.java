@@ -19,24 +19,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-@Component
+
 public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     private Dictionary dictionary;
     private PostingsList postingsList;
-    private final DictionaryRouter dictionaryRouter;
     private final String configPath = "src/files/config.cfg";
     private SideFileWriter sideFileWriter;
     public static int saveCount;
     public DocumentMetaIndex documentMetaIndex;
     private int insertCount;
+    private GlobalStatistics globalStatistics;
 
 
 
-    public IndexWriter(DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter, DocumentMetaIndex documentMetaIndex) {
-        this.dictionaryRouter = dictionaryRouter;
+    public IndexWriter(DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter, DocumentMetaIndex documentMetaIndex, GlobalStatistics globalStatistics) {
         this.documentMetaIndex = documentMetaIndex;
+        this.globalStatistics = globalStatistics;
         this.dictionary = new Dictionary();
-        this.postingsList = new PostingsList(dictionary);
+        this.postingsList = new PostingsList(dictionary, globalStatistics);
         this.sideFileWriter = sideFileWriter;
         load();
 
@@ -67,34 +67,40 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
 
 
-    public void write(int docId, Map<String, List<HitItem>> pairs) {
+    public void write(int docId, Map<String, List<HitItem>> pairs, Boolean meta) {
+        globalStatistics.increaseIndexSize(1);
         if(insertCount < Config.getDumpMaxInsertions()) {
             insertCount++;
         } else {
-
+            insertCount = 1;
             sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
 
             this.dictionary = new Dictionary();
-            this.postingsList = new PostingsList(dictionary);
+            this.postingsList = new PostingsList(dictionary, globalStatistics);
 
             saveCount++;
         }
 
+        if(meta == false) {
+            DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs); // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
 
-        DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs); // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
-
-        //mega TODO: before doing this check if anchors are inserted or not
-        this.documentMetaIndex.add(docId, documentMetaItem);
+            //mega TODO: before doing this check if anchors are inserted or not
+            documentMetaIndex.add(docId, documentMetaItem);
+        }
 
     }
 
     public void emergencyDump() {
 
+        this.documentMetaIndex.save();
+        this.globalStatistics.save();
+
+
         if (!postingsList.map.isEmpty()) {
 
             sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
             this.dictionary = new Dictionary();
-            this.postingsList = new PostingsList(dictionary);
+            this.postingsList = new PostingsList(dictionary, globalStatistics);
 
             saveCount++;
         }
@@ -105,8 +111,8 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     @Override
     public void onApplicationEvent(ContextClosedEvent event){
         //if the thing shuts down, save what's left
+
         emergencyDump();
-        DocumentMetaIndex.save();
 
     }
 

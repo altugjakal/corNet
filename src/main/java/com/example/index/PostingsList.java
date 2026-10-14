@@ -13,11 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PostingsList {
     private final Dictionary dictionary;
+    public GlobalStatistics globalStatistics;
     public final ConcurrentHashMap<String, List<PostingItem>> map;
     public String lastSavePath = "";
 
-    public PostingsList(Dictionary dictionary) {
+    public PostingsList(Dictionary dictionary, GlobalStatistics globalStatistics) {
         this.dictionary = dictionary;
+        this.globalStatistics = globalStatistics;
         this.map = new ConcurrentHashMap<>();
     }
 
@@ -30,9 +32,15 @@ public class PostingsList {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
             for (HitItem hitItem: hits) {
-                fieldLengths.put(hitItem.fieldId, fieldLengths.getOrDefault(hitItem.fieldId, 0) + 1);
-                //here update global statistics
+                System.out.println(hitItem.fieldId);
+                fieldLengths.merge(hitItem.fieldId, 1, Integer::sum);
             }
+
+            for(Map.Entry<Integer, Integer> fieldLength : fieldLengths.entrySet()) {
+                globalStatistics.updateFieldAverage(fieldLength.getKey(), fieldLength.getValue());
+            }
+
+
 
             PostingItem item = new PostingItem();
             item.docId = docId;
@@ -153,6 +161,8 @@ public class PostingsList {
                         FileManager.writeInt(p.docId);
                         FileManager.writeInt(hitsSize);
                         offset += 8;
+
+                        p.hits.sort(Comparator.comparingInt(h -> h.fieldId));
 
                         for (int i = 0; i < hitsSize; i++) {
                             FileManager.writeInt(p.hits.get(i).fieldId);

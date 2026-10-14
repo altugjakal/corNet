@@ -7,15 +7,18 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+
 public class DictionaryRouter {
 
 
-
+    public GlobalStatistics globalStatistics;
     public ConcurrentHashMap<Integer, DictPostingPair> dictionaries = new ConcurrentHashMap<>();
 
 
-    public DictionaryRouter() {
+    public DictionaryRouter(GlobalStatistics globalStatistics) {
+
+        this.globalStatistics = globalStatistics;
+
         File dictDir = new File("src/files/dicts/");
         File postingDir = new File("src/files/postings/");
 
@@ -34,7 +37,7 @@ public class DictionaryRouter {
         for(int i = 0; i < dictFileListings.length; i++){
             Dictionary dictionary = new Dictionary();
             dictionary.load(dictFileListings[i].getPath());
-            PostingsList postingsList = new PostingsList(dictionary);
+            PostingsList postingsList = new PostingsList(dictionary, globalStatistics);
             postingsList.lastSavePath = postingFileListings[i].getPath();
             DictPostingPair dictPostingPair = new DictPostingPair(dictionary, postingsList);
             submit(i, dictPostingPair);

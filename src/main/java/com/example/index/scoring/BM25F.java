@@ -4,13 +4,23 @@ import com.example.index.DocumentMetaIndex;
 
 public class BM25F {
 
-    private static float idf(int df) {
-        return (float) Math.log(1 + (DocumentMetaIndex.getIndexSize() - df + 0.5D)/(df + 0.5D));
+    private static float idf(int df, int indexSize) {
+
+        return (float) Math.log(1 + (indexSize - df + 0.5D) / (df + 0.5D));
+        //brong
     }
 
-    public static float score(int tf, int df, float b, float k, float avgdf) {
-       float idf = idf(df);
-       float bm25f = idf * ((tf*(1+k)) / (tf + b * (df/avgdf) ));
+    public static double score(int tf, int df, double b, double k, float averageDocumentFrequency, int fieldLength, float filedWeight, int indexSize) {
+       float idf = idf(df, indexSize);
+
+
+
+       double lenNorm = 1.0 - b + (b * (fieldLength / averageDocumentFrequency));
+       double weightedTf = tf * filedWeight;
+       double bm25f = idf * (weightedTf / (weightedTf + k * lenNorm));
+
+
+
 
        return bm25f;
 

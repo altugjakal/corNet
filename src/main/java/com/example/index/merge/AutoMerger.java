@@ -15,11 +15,13 @@ public class AutoMerger {
     private DictionaryRouter dictionaryRouter;
     private IndexWriter indexWriter;
     private SideFileWriter sideFileWriter;
+    public GlobalStatistics globalStatistics;
 
-    public AutoMerger(IndexWriter indexWriter, DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter) {
+    public AutoMerger(IndexWriter indexWriter, DictionaryRouter dictionaryRouter, SideFileWriter sideFileWriter, GlobalStatistics globalStatistics) {
         this.indexWriter = indexWriter;
         this.dictionaryRouter = dictionaryRouter;
         this.sideFileWriter = sideFileWriter;
+        this.globalStatistics = globalStatistics;
     }
 
     public void merge( int fileOrderOne, int fileOrderTwo) throws IOException {
@@ -28,7 +30,7 @@ public class AutoMerger {
 
         this.indexWriter.decrementSaveCount();
         Dictionary newDictionary = new Dictionary();
-        PostingsList newPostingslist = new PostingsList(newDictionary);
+        PostingsList newPostingslist = new PostingsList(newDictionary, globalStatistics);
 
         if (dictionaryRouter.dictionaries.size() < 2) {
             throw new FileNotFoundException();

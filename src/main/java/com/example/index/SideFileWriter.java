@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-@Component
+
 public class SideFileWriter extends Thread {
     public BlockingQueue<CountPair> saveQueue;
     public DictionaryRouter dictionaryRouter;

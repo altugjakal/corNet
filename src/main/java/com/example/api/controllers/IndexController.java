@@ -3,31 +3,31 @@ package com.example.api.controllers;
 import com.example.index.*;
 
 import com.example.index.merge.MergeScheduler;
-import com.example.index.types.ApiTokenItem;
+import com.example.index.types.Document;
 import com.example.index.types.HitItem;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class IndexController {
-    private DictionaryRouter dictionaryRouter = new DictionaryRouter();
+    private DictionaryRouter dictionaryRouter;
     private IndexWriter indexWriter;
-    private DocumentMetaIndex documentMetaIndex;
+    public DocumentMetaIndex documentMetaIndex;
+    public GlobalStatistics globalStatistics;
 
 
 
     public IndexController() {
-
-            DocumentMetaIndex documentMetaIndex = new DocumentMetaIndex();
-            documentMetaIndex.load(""); // enter filepath from config
+            globalStatistics = new GlobalStatistics();
+            globalStatistics.load("src/files/statistics.meta");
+            dictionaryRouter =  new DictionaryRouter(globalStatistics);
+            documentMetaIndex = new DocumentMetaIndex();
+            documentMetaIndex.load("src/files/details.meta"); // enter filepath from config or not
             SideFileWriter sideFileWriter = new SideFileWriter(dictionaryRouter);
             sideFileWriter.start();
-            indexWriter = new IndexWriter(dictionaryRouter, sideFileWriter, documentMetaIndex);
-            MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter, sideFileWriter);
+            indexWriter = new IndexWriter(dictionaryRouter, sideFileWriter, documentMetaIndex,  globalStatistics);
+            MergeScheduler mergeScheduler = new MergeScheduler(50, 2, dictionaryRouter, indexWriter, sideFileWriter, globalStatistics);
             mergeScheduler.start();
 
 
@@ -41,13 +41,18 @@ public class IndexController {
 
     }
 
-    @PostMapping("/insert")
-    public void index(@RequestBody InsertRequest insertRequest) {
-
+    @PostMapping({"/insert", "/insert/{meta}"})
+    public void index(
+            @PathVariable(value = "meta", required = false) String meta,
+            @RequestBody InsertRequest insertRequest
+    ) {
         Map<String, List<HitItem>> pairs = insertRequest.pairs;
 
-        indexWriter.write(insertRequest.docId, pairs);
-
+        if (meta == null) {
+            indexWriter.write(insertRequest.docId, pairs, false);
+        } else {
+            indexWriter.write(insertRequest.docId, pairs, true);
+        }
     }
 
     @PostMapping("/commit")
@@ -64,14 +69,13 @@ public class IndexController {
 
     @GetMapping("/search/{query}")
 
-    public List<ApiTokenItem> index(@PathVariable String query) {
+    public HashMap<Integer, Document> index(@PathVariable String query) {
 
-        SearchIndex searchIndex = new SearchIndex(dictionaryRouter, documentMetaIndex);
+        SearchIndex searchIndex = new SearchIndex(dictionaryRouter, documentMetaIndex, globalStatistics);
 
         String[] tokens = query.split(" ");
 
         List<String> terms = new ArrayList<String>(Arrays.asList(tokens));
-
 
         return searchIndex.searchByTokens(terms);
 

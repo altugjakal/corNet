@@ -1,6 +1,7 @@
 package com.example.index.merge;
 
 import com.example.index.DictionaryRouter;
+import com.example.index.GlobalStatistics;
 import com.example.index.IndexWriter;
 import com.example.index.SideFileWriter;
 
@@ -14,9 +15,10 @@ public class MergeScheduler extends Thread {
     public DictionaryRouter dictionaryRouter;
     public Integer activeFileCount;
     private boolean workerWorking;
-    public MergeScheduler(Integer waitInterval, Integer fileCountThreshold, DictionaryRouter dictionaryRouter, IndexWriter indexWriter, SideFileWriter sideFileWriter) {
+
+    public MergeScheduler(Integer waitInterval, Integer fileCountThreshold, DictionaryRouter dictionaryRouter, IndexWriter indexWriter, SideFileWriter sideFileWriter, GlobalStatistics globalStatistics) {
         this.waitInterval = waitInterval;
-        this.autoMerger = new AutoMerger(indexWriter, dictionaryRouter, sideFileWriter);
+        this.autoMerger = new AutoMerger(indexWriter, dictionaryRouter, sideFileWriter, globalStatistics);
         this.dictionaryRouter = dictionaryRouter;
 
         this.fileCountThreshold = (fileCountThreshold == null ? fileCountThreshold : 2);
