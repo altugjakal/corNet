@@ -18,6 +18,7 @@ public class GlobalStatistics {
     }
 
     public void updateFieldAverage(int fieldId, int fieldLength) {
+
         avgFieldLengths.putIfAbsent(fieldId, (avgFieldLengths.getOrDefault(fieldId, 0f) + fieldLength)/ indexSize);
     }
 
@@ -32,9 +33,7 @@ public class GlobalStatistics {
     public void load(String filePath) {
         File file = new File(filePath);
 
-        System.out.println("entering");
         this.loadPath = filePath;
-        System.out.println(this.loadPath);
         //could get rid of the filePath parameter as there will only be a single file
 
 

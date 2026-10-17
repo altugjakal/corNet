@@ -32,12 +32,14 @@ public class PostingsList {
             String word = entry.getKey();
             List<HitItem> hits = entry.getValue();
             for (HitItem hitItem: hits) {
-                System.out.println(hitItem.fieldId);
                 fieldLengths.merge(hitItem.fieldId, 1, Integer::sum);
             }
 
             for(Map.Entry<Integer, Integer> fieldLength : fieldLengths.entrySet()) {
+
                 globalStatistics.updateFieldAverage(fieldLength.getKey(), fieldLength.getValue());
+
+
             }
 
 

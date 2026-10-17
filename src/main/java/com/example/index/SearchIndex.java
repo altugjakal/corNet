@@ -6,10 +6,8 @@ import com.example.index.types.*;
 import com.example.index.utils.Config;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class SearchIndex {
@@ -83,7 +81,7 @@ public class SearchIndex {
 
 
                         ScoredPostingItem scoredPostingItem = new ScoredPostingItem();
-                        scoredPostingItem.broadTermWeight = TfIdf.score(tf, df); //encapsulate this - done
+                        scoredPostingItem.broadTermWeight = TfIdf.score(tf, df); //not used yet
 
                         scoredPostingItem.hits = offsetItem.postingItem.hits;
                         scoredPostingItem.docId = offsetItem.postingItem.docId;
