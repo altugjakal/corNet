@@ -42,6 +42,10 @@ public class Config {
         properties.setProperty("field-" + fieldId, String.valueOf(fieldWeight));
     }
 
+    public static int getReturnLimit()  {
+        return Integer.parseInt(properties.getProperty("returnLimit"));
+    }
+
     public static Float getFieldWeight(int fieldId) {
         return Float.valueOf(properties.getProperty("field-" + fieldId));
     }

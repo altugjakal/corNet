@@ -6,6 +6,7 @@ import com.example.index.types.*;
 import com.example.index.utils.Config;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SearchIndex {
 
     }
 
-    public HashMap<Integer, Document> searchByTokens(List<String> tokens) {
+    public List<Document> searchByTokens(List<String> tokens) {
         //combine idf's somehow?? read more -read more, use vector model on the other end - done
         List<String> uniqueTokens = tokens.stream()
                 .distinct()
@@ -31,7 +32,7 @@ public class SearchIndex {
 
 
 
-        HashMap<Integer, Document> documentScores = new HashMap<>();
+        HashMap<Integer, Document> documentScoreMap = new HashMap<>();
         for (int i = 0; i < dictionaryRouter.dictionaries.size(); i++) {
             DictPostingPair pair = this.dictionaryRouter.dictionaries.get(i);
 
@@ -76,7 +77,7 @@ public class SearchIndex {
                             float fieldWeight = Config.getFieldWeight(entry.getKey());
                             double bm25Score = BM25F.score(fieldTermFrequency, df, 1, 0.85, avgFieldLength, fieldLength, fieldWeight, indexSize);
 
-                            documentScores.computeIfAbsent(offsetItem.postingItem.docId, id -> new Document(id, 0d)).bm25Score += bm25Score;
+                            documentScoreMap.computeIfAbsent(offsetItem.postingItem.docId, id -> new Document(id, 0d)).bm25Score += bm25Score;
                         }
 
 
@@ -98,7 +99,7 @@ public class SearchIndex {
             }
         }
 
-
+        List<Document> documentScores = documentScoreMap.values().stream().sorted(Comparator.comparingDouble((Document d) -> d.bm25Score).reversed()).limit(Config.getReturnLimit()).toList();
 
         return documentScores;
     }

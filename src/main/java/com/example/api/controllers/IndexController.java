@@ -69,7 +69,7 @@ public class IndexController {
 
     @GetMapping("/search/{query}")
 
-    public HashMap<Integer, Document> index(@PathVariable String query) {
+    public List<Document> index(@PathVariable String query) {
 
         SearchIndex searchIndex = new SearchIndex(dictionaryRouter, documentMetaIndex, globalStatistics);
 
