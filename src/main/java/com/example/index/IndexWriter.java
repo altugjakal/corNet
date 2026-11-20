@@ -7,7 +7,6 @@ import com.example.index.types.HitItem;
 import com.example.index.utils.Config;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.stereotype.Component;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -68,7 +67,8 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
 
     public void write(int docId, Map<String, List<HitItem>> pairs, Boolean meta) {
-        globalStatistics.increaseIndexSize(1);
+
+        System.out.println(Config.getDumpMaxInsertions());
         if(insertCount < Config.getDumpMaxInsertions()) {
             insertCount++;
         } else {
@@ -82,6 +82,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
         }
 
         if(meta == false) {
+            globalStatistics.increaseIndexSize(1);
             DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs); // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
 
             //mega TODO: before doing this check if anchors are inserted or not

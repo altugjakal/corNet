@@ -36,10 +36,9 @@ public class PostingsList {
             }
 
             for(Map.Entry<Integer, Integer> fieldLength : fieldLengths.entrySet()) {
-
+                System.out.println(fieldLength.getKey());
+                System.out.println(fieldLength.getValue());
                 globalStatistics.updateFieldAverage(fieldLength.getKey(), fieldLength.getValue());
-
-
             }
 
 

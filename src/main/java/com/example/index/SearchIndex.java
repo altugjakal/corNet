@@ -75,7 +75,7 @@ public class SearchIndex {
                             float avgFieldLength = globalStatistics.getFieldAverage(entry.getKey());
                             int fieldLength = documentMetaItem.fieldLengths.get(entry.getKey());
                             float fieldWeight = Config.getFieldWeight(entry.getKey());
-                            double bm25Score = BM25F.score(fieldTermFrequency, df, 1, 0.85, avgFieldLength, fieldLength, fieldWeight, indexSize);
+                            double bm25Score = BM25F.score(fieldTermFrequency, df, 0.75, 1.2, avgFieldLength, fieldLength, fieldWeight, indexSize);
 
                             documentScoreMap.computeIfAbsent(offsetItem.postingItem.docId, id -> new Document(id, 0d)).bm25Score += bm25Score;
                         }
