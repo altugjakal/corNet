@@ -68,23 +68,23 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void write(int docId, Map<String, List<HitItem>> pairs, Boolean meta) {
 
-        System.out.println(Config.getDumpMaxInsertions());
-        System.out.println(insertCount);
-        if(insertCount < Config.getDumpMaxInsertions()) {
-            insertCount++;
-        } else {
-            insertCount = 1;
-            sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
-
-            this.dictionary = new Dictionary();
-            this.postingsList = new PostingsList(dictionary, globalStatistics);
-
-            saveCount++;
-        }
-
+        DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs);
         if(meta == false) {
+            if(insertCount < Config.getDumpMaxInsertions()) {
+                insertCount++;
+            } else {
+                insertCount = 1;
+                sideFileWriter.addToQueue(saveCount, dictionary, postingsList);
+
+                this.dictionary = new Dictionary();
+                this.postingsList = new PostingsList(dictionary, globalStatistics);
+
+                saveCount++;
+            }
+
+
             globalStatistics.increaseIndexSize(1);
-            DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs); // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
+             // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
 
             //mega TODO: before doing this check if anchors are inserted or not
             documentMetaIndex.add(docId, documentMetaItem);
