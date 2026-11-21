@@ -7,6 +7,7 @@ import com.example.index.types.DocumentMetaItem;
 import com.example.index.types.HitItem;
 import com.example.index.types.OffsetItem;
 import com.example.index.types.PostingItem;
+import com.example.index.utils.Config;
 
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +25,12 @@ public class PostingsList {
     }
 
 
-    public DocumentMetaItem add(int docId, Map<String, List<HitItem>> pairs ) {
+
+    public DocumentMetaItem add(int docId, Map<String, List<HitItem>> pairs) {
+        return add(docId, pairs, false);
+    }
+
+    public DocumentMetaItem add(int docId, Map<String, List<HitItem>> pairs, boolean meta) {
 
         int count = 0;
         HashMap<Integer, Integer> fieldLengths = new HashMap<>();
@@ -36,8 +42,6 @@ public class PostingsList {
             }
 
             for(Map.Entry<Integer, Integer> fieldLength : fieldLengths.entrySet()) {
-                System.out.println(fieldLength.getKey());
-                System.out.println(fieldLength.getValue());
                 globalStatistics.updateFieldAverage(fieldLength.getKey(), fieldLength.getValue());
             }
 
@@ -46,7 +50,12 @@ public class PostingsList {
             PostingItem item = new PostingItem();
             item.docId = docId;
             item.hits.addAll(hits);
-            count += item.hits.size();
+            if (meta=true) {
+                count = Config.getPlaceholderLength();
+            } else {
+                count += item.hits.size();
+            }
+
 
 
 

@@ -68,7 +68,8 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
     public void write(int docId, Map<String, List<HitItem>> pairs, Boolean meta) {
 
-        DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs);
+        DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs, meta);
+        documentMetaIndex.add(docId, documentMetaItem);
         if(meta == false) {
             if(insertCount < Config.getDumpMaxInsertions()) {
                 insertCount++;
@@ -87,7 +88,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
              // done - maybe return total length here, instead of re-iterating something like count = this.postingslist.add
 
             //mega TODO: before doing this check if anchors are inserted or not
-            documentMetaIndex.add(docId, documentMetaItem);
+
         }
 
     }

@@ -38,6 +38,21 @@ public class Config {
         }
     }
 
+    public static Integer getPlaceholderLength() {
+        try {
+            String placeholderLengthProperty = properties.getProperty("placeholderLength", "2500"); //2500 avg len of a webpage
+
+            if (placeholderLengthProperty == null) {
+                throw new PropertyNotFoundException("The property was not defined in configuration, have you configured it?");
+            }
+            return Integer.parseInt(placeholderLengthProperty);
+
+        } catch (NullPointerException e) {
+            throw new PropertyNotFoundException("The property was not found in configuration.");
+
+        }
+    }
+
     public static void setFieldWeight(int fieldId, float fieldWeight) {
         properties.setProperty("field-" + fieldId, String.valueOf(fieldWeight));
     }
