@@ -69,6 +69,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
     public void write(int docId, Map<String, List<HitItem>> pairs, Boolean meta) {
 
         System.out.println(Config.getDumpMaxInsertions());
+        System.out.println(insertCount);
         if(insertCount < Config.getDumpMaxInsertions()) {
             insertCount++;
         } else {
