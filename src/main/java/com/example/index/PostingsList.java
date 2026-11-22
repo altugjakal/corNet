@@ -50,7 +50,7 @@ public class PostingsList {
             PostingItem item = new PostingItem();
             item.docId = docId;
             item.hits.addAll(hits);
-            if (meta=true) {
+            if (meta == true) {
                 count = Config.getPlaceholderLength();
             } else {
                 count += item.hits.size();

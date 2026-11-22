@@ -70,7 +70,7 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
         DocumentMetaItem documentMetaItem = this.postingsList.add(docId, pairs, meta);
         documentMetaIndex.add(docId, documentMetaItem);
-        if(meta == false) {
+
             if(insertCount < Config.getDumpMaxInsertions()) {
                 insertCount++;
             } else {
@@ -89,7 +89,6 @@ public class IndexWriter implements ApplicationListener<ContextClosedEvent> {
 
             //mega TODO: before doing this check if anchors are inserted or not
 
-        }
 
     }
 
