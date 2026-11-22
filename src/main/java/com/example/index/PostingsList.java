@@ -124,17 +124,6 @@ public class PostingsList {
 
 
 
-        for (Map.Entry<String, List<PostingItem>> entry : map.entrySet()) {
-            System.out.println("key: " + entry.getKey());
-
-            // Nested loop to iterate over the list of PostingItems
-            for (PostingItem item : entry.getValue()) {
-                System.out.println("  PostingItem docId: " + item.docId);
-                System.out.println("  PostingItem docId: " + item.hits.size());
-            }
-        }
-
-
 
 
         File file = new File(filePath);
