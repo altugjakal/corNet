@@ -62,7 +62,7 @@ public class PostingsList {
             count = Config.getPlaceholderLength();
         }
 
-        return new DocumentMetaItem(count, fieldLengths);
+        return new DocumentMetaItem(count, fieldLengths, meta);
     }
 
     public List<OffsetItem> getByOffset(int offset, String filePath) throws IOException {

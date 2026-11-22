@@ -14,6 +14,7 @@ public class DocumentMetaIndex {
     public DocumentMetaIndex() {
         map = new ConcurrentHashMap<>();
 
+
     }
 
     public void load(String filePath) {
