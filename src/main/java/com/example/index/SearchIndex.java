@@ -73,7 +73,7 @@ public class SearchIndex {
                         {
                             int fieldTermFrequency = entry.getValue();
                             float avgFieldLength = globalStatistics.getFieldAverage(entry.getKey());
-                            int fieldLength = documentMetaItem.fieldLengths.get(entry.getKey());
+                            int fieldLength = documentMetaItem.fieldLengths.getOrDefault(entry.getKey(), 0);
                             float fieldWeight = Config.getFieldWeight(entry.getKey());
                             double bm25Score = BM25F.score(fieldTermFrequency, df, 0.75, 1.2, avgFieldLength, fieldLength, fieldWeight, indexSize);
 
