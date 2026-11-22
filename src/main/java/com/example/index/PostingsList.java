@@ -50,17 +50,16 @@ public class PostingsList {
             PostingItem item = new PostingItem();
             item.docId = docId;
             item.hits.addAll(hits);
-            if (meta == true) {
-                count = Config.getPlaceholderLength();
-            } else {
-                count += item.hits.size();
-            }
 
-
+            count += item.hits.size();
 
 
             map.computeIfAbsent(word, k -> new ArrayList<>())
                     .add(item);
+        }
+
+        if (meta) {
+            count = Config.getPlaceholderLength();
         }
 
         return new DocumentMetaItem(count, fieldLengths);

@@ -56,7 +56,7 @@ public class SearchIndex {
 
                     for (OffsetItem offsetItem : offsetItems) {
                         DocumentMetaItem documentMetaItem = documentMetaIndex.get(offsetItem.postingItem.docId);
-                        float tf = offsetItem.postingItem.hits.size() / documentMetaIndex.get(offsetItem.postingItem.docId).contentLength;
+
 
 
                         /*not too
@@ -82,7 +82,6 @@ public class SearchIndex {
 
 
                         ScoredPostingItem scoredPostingItem = new ScoredPostingItem();
-                        scoredPostingItem.broadTermWeight = TfIdf.score(tf, df); //not used yet
 
                         scoredPostingItem.hits = offsetItem.postingItem.hits;
                         scoredPostingItem.docId = offsetItem.postingItem.docId;
